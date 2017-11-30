@@ -19,7 +19,6 @@ var $source = require('vinyl-source-stream');
 var $vue = require('vue');
 var $lodash = require('lodash');
 var $axios = require('axios');
-// var $skeleton = require('skeleton');
 
 $gulp.task('html', function () {
 	return $gulp.src('src/**/*.html')
