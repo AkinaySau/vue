@@ -3,6 +3,7 @@ var $sourceMaps = require('gulp-sourcemaps');
 var $autoPrefixer = require('gulp-autoprefixer');
 var $sass = require('gulp-sass');
 var $imageMin = require('gulp-imagemin');
+var $cleanCSS = require('gulp-clean-css');
 
 
 //server
@@ -25,9 +26,15 @@ $gulp.task('html', function () {
 		.pipe($gulp.dest('public'))
 		.pipe($liveReload($server));
 });
+$gulp.task('css', function () {
+	return $gulp.src('src/css/**/*.css')
+		.pipe($cleanCSS())
+		.pipe($gulp.dest('public/css'))
+		.pipe($liveReload($server));
+});
 //css
 $gulp.task('scss', function () {
-	return $gulp.src('./src/scss/**/*.scss')
+	return $gulp.src('./src/scss/style.scss')
 		.pipe($sourceMaps.init())
 		.pipe($sass({
 			'include css': true,
@@ -54,7 +61,7 @@ $gulp.task('ja-browserify', function () {
 });
 //media
 $gulp.task('media', function () {
-	$gulp.src('./assets/media/**/*')
+	$gulp.src('./scr/media/**/*')
 		.pipe($imageMin())
 		.pipe($gulp.dest('./public/media'))
 });
@@ -76,6 +83,7 @@ $gulp.task('watch', function () {
 	$gulp.run('ja-browserify');
 	$gulp.run('media');
 	$gulp.run('html');
+	$gulp.run('css');
 
 	// Подключаем Livereload
 	$server.listen(35729, function (err) {
@@ -89,6 +97,9 @@ $gulp.task('watch', function () {
 		});
 		$gulp.watch('./src/**/*.html', function () {
 			$gulp.run('html');
+		});
+		$gulp.watch('./src/css/**/*.html', function () {
+			$gulp.run('css');
 		});
 	});
 	$gulp.run('http-server');
