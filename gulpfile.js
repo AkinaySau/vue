@@ -3,7 +3,6 @@ var $sourceMaps = require('gulp-sourcemaps');
 var $autoPrefixer = require('gulp-autoprefixer');
 var $sass = require('gulp-sass');
 var $imageMin = require('gulp-imagemin');
-var $cleanCSS = require('gulp-clean-css');
 
 
 //server
@@ -26,12 +25,6 @@ $gulp.task('html', function () {
 		.pipe($gulp.dest('public'))
 		.pipe($liveReload($server));
 });
-$gulp.task('css', function () {
-	return $gulp.src('src/css/**/*.css')
-		.pipe($cleanCSS())
-		.pipe($gulp.dest('public/css'))
-		.pipe($liveReload($server));
-});
 //css
 $gulp.task('scss', function () {
 	return $gulp.src('./src/scss/style.scss')
@@ -42,6 +35,7 @@ $gulp.task('scss', function () {
 		}))
 		.pipe($autoPrefixer({browsers: ['last 5 versions']}))
 		.pipe($sourceMaps.write('.'))
+		.pipe($gulp.dest('src/css')) //доп копия в ветку разработки для адекватного поведения шторма
 		.pipe($gulp.dest('public/css'))
 		.pipe($liveReload($server)); // даем команду на перезагрузку страницы
 
@@ -83,7 +77,6 @@ $gulp.task('watch', function () {
 	$gulp.run('ja-browserify');
 	$gulp.run('media');
 	$gulp.run('html');
-	$gulp.run('css');
 
 	// Подключаем Livereload
 	$server.listen(35729, function (err) {
@@ -97,9 +90,6 @@ $gulp.task('watch', function () {
 		});
 		$gulp.watch('./src/**/*.html', function () {
 			$gulp.run('html');
-		});
-		$gulp.watch('./src/css/**/*.html', function () {
-			$gulp.run('css');
 		});
 	});
 	$gulp.run('http-server');
